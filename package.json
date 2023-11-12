@@ -1,0 +1,39 @@
+{
+  "name": "@westbrookdaniel/palm",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Small UI library designed for islands",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/westbrookdaniel/palm.git"
+  },
+  "homepage": "https://github.com/westbrookdaniel/palm",
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "files": ["src, dist"],
+  "scripts": {
+    "build": "bun build ./src/global.js --outfile ./dist/index.min.js --minify",
+    "publish": "bun run build && npm publish --access public"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./src/index.d.ts",
+      "import": "./src/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./src/index.d.ts",
+      "import": "./src/jsx-dev-runtime.js"
+    },
+    "./html": {
+      "types": "./src/index.d.ts",
+      "import": "./src/html.js"
+    }
+  }
+}
