@@ -37,7 +37,7 @@ export function renderJsx(node) {
     .join(" ");
 
   if (tag === "") {
-    return children.map(renderJsxChildren).join("");
+    return renderJsxChildren(children);
   }
 
   if (typeof tag === "function") {
@@ -49,9 +49,7 @@ export function renderJsx(node) {
     return `<${tag} ${attrs} />`;
   }
 
-  return `<${tag} ${attrs}>${children
-    .map(renderJsxChildren)
-    .join("")}</${tag}>`;
+  return `<${tag} ${attrs}>${renderJsxChildren(children)}</${tag}>`;
 }
 
 function renderJsxChildren(c) {
@@ -59,7 +57,7 @@ function renderJsxChildren(c) {
     return c.map(renderJsxChildren).join("");
   }
   if (isValidElement(c)) {
-    return renderJsx(c.tag, c.props, ...c.children);
+    return renderJsx(c);
   }
   return c.toString();
 }
