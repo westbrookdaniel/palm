@@ -12,6 +12,8 @@ export function jsx(tag, props, ...children) {
   return { $$typeof: VNodeSymbol, tag, props, children };
 }
 
+export { jsx as jsxs };
+
 const VNodeSymbol = Symbol("vnode");
 
 export function isValidElement(node) {

@@ -11,6 +11,12 @@ export function jsx(
   ...children: Children[]
 ): VNode;
 
+export function jsxs(
+  tag: string | Function,
+  props: Record<string, unknown>,
+  ...children: Children[]
+): VNode;
+
 export function isValidElement(node: any): node is VNode;
 
 type VNode = {
