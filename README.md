@@ -24,7 +24,7 @@ of the modules, since it's expected you will use a bundler), although it does no
 This version also includes the global `Palm` with the properties `renderHtml`, `useMount`, `useRef` and `html`,
 so you can easily use this without a bundler.
 
-Try it out with `https://unpkg.com/@westbrookdaniel/palm/dist/index.min.js` (only ~100 bytes)
+Try it out with `https://unpkg.com/@westbrookdaniel/palm/dist/index.min.js` (< 100 bytes)
 
 Otherwise install the package normally using your package manager (e.g. `npm install @westbrookdaniel/palm`)
 
