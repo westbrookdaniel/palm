@@ -19,10 +19,14 @@ object you pass it into a proxy, so you can't destructure it.
 
 Both JSX and tagged template literals are supported.
 
-There is also a extra small version built to `/dist/index.min.js` which is minified (unlike the rest
+There is also a extra small version at `/dist/index.min.js` which is minified (unlike the rest
 of the modules, since it's expected you will use a bundler), although it does not include JSX support.
 This version also includes the global `Palm` with the properties `renderHtml`, `useMount`, `useRef` and `html`,
 so you can easily use this without a bundler.
+
+Try it out with `https://unpkg.com/@westbrookdaniel/palm/dist/index.min.js` (only ~100 bytes)
+
+Otherwise install the package normally using your package manager (e.g. `npm install @westbrookdaniel/palm`)
 
 If using JSX, add `"jsx": "react-jsx", "jsxImportSource": "@westbrookdaniel/palm"` to your tsconfig.json.
 
