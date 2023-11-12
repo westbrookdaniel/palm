@@ -1,17 +1,13 @@
 import { Children, VNode } from "./jsx-runtime";
 
+export { isValidElement, Fragment } from "./jsx-runtime";
+export { html } from "./html";
 export { Children, VNode };
 
 export function render(node: () => string, el: HTMLElement): void;
 export function renderHtml(node: () => string, el: HTMLElement): void;
 export function useMount(cb: () => void): void;
 export function useRef<T extends object>(initial: T): T;
-
-// Re-exported from `/html`
-export function html(strings: TemplateStringsArray, ...values: any[]): string;
-// Re-exported from `/jsx-runtime`
-export function isValidElement(node: any): node is VNode;
-export function Fragment(props: { children: Children[] }): VNode;
 
 /**
  * The below code is based on React and Hono

@@ -65,7 +65,7 @@ export function render(component, el) {
     getSeededId = createIdSeeder(seed);
     let html = component();
     if (isValidElement(html)) {
-      html = renderJsx(html.tag, html.props, ...html.children);
+      html = renderJsx(html);
     }
     el.innerHTML = html;
     applyEvents(el);

@@ -1,18 +1,12 @@
 import { eventMap, getSeededId } from "./";
 
-export function jsxDEV(tag, props) {
+export function jsx(tag, props) {
   const children = props.children ?? [];
   delete props["children"];
-  return Array.isArray(children)
-    ? jsx(tag, props, ...children)
-    : jsx(tag, props, children);
-}
-
-export function jsx(tag, props, ...children) {
   return { $$typeof: VNodeSymbol, tag, props, children };
 }
 
-export { jsx as jsxs };
+export { jsx as jsxs, jsx as jsxDEV };
 
 const VNodeSymbol = Symbol("vnode");
 
@@ -21,8 +15,9 @@ export function isValidElement(node) {
   return node.$$typeof === VNodeSymbol;
 }
 
-export function renderJsx(tag, props, ...children) {
-  // Just build to string
+export function renderJsx(node) {
+  const { tag, props, children } = node;
+
   const attrs = Object.entries(props)
     .map(([key, value]) => {
       if (typeof value === "function") {

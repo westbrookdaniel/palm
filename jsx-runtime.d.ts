@@ -8,13 +8,11 @@ export function jsxDEV(
 export function jsx(
   tag: string | Function,
   props: Record<string, unknown>,
-  ...children: Children[]
 ): VNode;
 
 export function jsxs(
   tag: string | Function,
   props: Record<string, unknown>,
-  ...children: Children[]
 ): VNode;
 
 export function isValidElement(node: any): node is VNode;
