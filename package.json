@@ -9,7 +9,7 @@
   },
   "homepage": "https://github.com/westbrookdaniel/palm",
   "type": "module",
-  "types": "./src/index.d.ts",
+  "types": "./index.d.ts",
   "main": "./src/index.js",
   "files": ["*"],
   "scripts": {
@@ -21,19 +21,19 @@
   },
   "exports": {
     ".": {
-      "types": "./src/index.d.ts",
+      "types": "./index.d.ts",
       "import": "./src/index.js"
     },
     "./jsx-runtime": {
-      "types": "./src/index.d.ts",
+      "types": "./jsx-runtime.d.ts",
       "import": "./src/jsx-runtime.js"
     },
     "./jsx-dev-runtime": {
-      "types": "./src/index.d.ts",
+      "types": "./jsx-dev-runtime.d.ts",
       "import": "./src/jsx-dev-runtime.js"
     },
     "./html": {
-      "types": "./src/index.d.ts",
+      "types": "./html.d.ts",
       "import": "./src/html.js"
     }
   }

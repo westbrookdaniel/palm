@@ -1,65 +1,17 @@
-declare module "@westbrookdaniel/palm/html" {
-  export function html(strings: TemplateStringsArray, ...values: any[]): string;
-}
+import { Children, VNode } from "./jsx-runtime";
 
-declare module "@westbrookdaniel/palm" {
-  export function render(node: () => string, el: HTMLElement): void;
-  export function renderHtml(node: () => string, el: HTMLElement): void;
-  export function useMount(cb: () => void): void;
-  export function useRef<T extends object>(initial: T): T;
+export { Children, VNode };
 
-  export type Children = string | number | VNode | Children[];
+export function render(node: () => string, el: HTMLElement): void;
+export function renderHtml(node: () => string, el: HTMLElement): void;
+export function useMount(cb: () => void): void;
+export function useRef<T extends object>(initial: T): T;
 
-  // Re-exported from `/html`
-  export function html(strings: TemplateStringsArray, ...values: any[]): string;
-  // Re-exported from `/jsx-runtime`
-  export function isValidElement(node: any): node is VNode;
-  export function Fragment(props: { children: Children[] }): VNode;
-}
-
-declare module "@westbrookdaniel/palm/jsx-runtime" {
-  export function jsxDEV(
-    tag: string | Function,
-    props: Record<string, unknown>,
-  ): VNode;
-
-  export function jsx(
-    tag: string | Function,
-    props: Record<string, unknown>,
-    ...children: Children[]
-  ): VNode;
-
-  export function isValidElement(node: any): node is VNode;
-
-  type VNode = {
-    $$typeof: Symbol;
-    tag: string | Function;
-    props: Record<string, unknown>;
-    children: Children[];
-  };
-
-  export function renderJsx(
-    tag: string | Function,
-    props: Record<string, unknown>,
-    ...children: Children[]
-  ): string;
-
-  export function Fragment(props: { children: Children[] }): VNode;
-}
-
-type Props = Record<string, any>;
-
-declare global {
-  namespace JSX {
-    type Element = string;
-    interface ElementChildrenAttribute {
-      children: Children;
-    }
-    interface IntrinsicElements extends IntrinsicElementsDefined {
-      [tagName: string]: Props;
-    }
-  }
-}
+// Re-exported from `/html`
+export function html(strings: TemplateStringsArray, ...values: any[]): string;
+// Re-exported from `/jsx-runtime`
+export function isValidElement(node: any): node is VNode;
+export function Fragment(props: { children: Children[] }): VNode;
 
 /**
  * The below code is based on React and Hono
