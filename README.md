@@ -2,6 +2,8 @@
 
 Small UI library designed for islands.
 
+Build reactive islands in < 200 bytes!
+
 In a similar model to react, this rendering library is "fast enough" but for this tradeof
 it gains an very small bundle size. It does this through instead of diffing or another method,
 I just destroy and rebuild the whole tree every time. This is appropriate for Island architecture
@@ -21,6 +23,8 @@ There is also a extra small version built to `/dist/index.min.js` which is minif
 of the modules, since it's expected you will use a bundler), although it does not include JSX support.
 This version also includes the global `Palm` with the properties `renderHtml`, `useMount`, `useRef` and `html`,
 so you can easily use this without a bundler.
+
+If using JSX, add `"jsx": "react-jsx", "jsxImportSource": "@westbrookdaniel/palm"` to your tsconfig.json.
 
 ## Example Code
 
