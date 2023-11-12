@@ -6,8 +6,11 @@ export { Children, VNode };
 
 export function render(node: () => string, el: HTMLElement): void;
 export function renderHtml(node: () => string, el: HTMLElement): void;
-export function useMount(cb: () => void): void;
-export function useRef<T extends object>(initial: T): T;
+export function useEffect(cb: () => void, []: any[]): void;
+export function useState<T>(initial: T): [T, Setter<T>];
+
+export type Setter<T> = (value: ValueOrUpdate<T>) => void;
+export type ValueOrUpdate<T> = T | ((prev: T) => T);
 
 /**
  * The below code is based on React and Hono

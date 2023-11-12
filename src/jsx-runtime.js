@@ -18,6 +18,8 @@ export function isValidElement(node) {
 export function renderJsx(node) {
   const { tag, props, children } = node;
 
+  getSeededId(); // This is help stop state from colliding
+
   const attrs = Object.entries(props)
     .map(([key, value]) => {
       if (typeof value === "function") {

@@ -5,10 +5,8 @@ export { Fragment, isValidElement } from "./jsx-runtime";
 
 export const eventMap = new Map();
 const stateMap = new Map();
-const mountSet = new Set();
+const effectMap = new Map();
 const renderMap = new Map();
-
-const StateKey = Symbol("StateKey");
 
 export let getSeededId;
 
@@ -75,57 +73,64 @@ export function render(component, el) {
 }
 
 /**
- * This hook will be run once on mount
+ * This hook will run the callback function
+ * whenever the second argument (dependencies) change
+ * You can use it with an empty array to run it only once
  *
  * @example
- * useMount(() => {
+ *
+ * useEffect(() => {
  *   console.log('mounted');
- * })
+ * }, [])
  */
-export function useMount(cb) {
+export function useEffect(cb, deps) {
   const { id } = getSeededId();
-  if (mountSet.has(id)) return;
-  mountSet.add(id);
-  cb();
+  if (effectMap.has(id)) {
+    if (effectMap.get(id) !== JSON.stringify(deps)) {
+      effectMap.set(id, deps);
+      cb();
+    }
+  } else {
+    mountSet.add(id, JSON.stringify(deps));
+    cb();
+  }
 }
 
 /**
  * Use this hook to get state in your components
- * You must provide it with an object, and setting
- * any property will cause a rerender
+ * It takes in an initial value and returns an tuple
+ * with the current value and a function to set the value
  *
- * NOTE: You can't destruct the state object, you must use
- * it as is because the returned object is a proxy which
- * allows us to track changes
+ * The setter can also take a function that will be passed
+ * the current state, where the returned value will set
+ * as the new state
  *
  * @example
- * const state = useState({ count: 0 });
- * state.count++ // This will cause a rerender
+ * const [count, setCount] = useState(0);
+ *
+ * setCount(1); // count === 1
+ * setCount(c => c + 1); // count === 2
  */
-export function useRef(initial) {
+export function useState(initial) {
   const { id, seed } = getSeededId();
-  const data = { id };
-  return new Proxy(initial, {
-    get(_, prop) {
-      if (prop === StateKey) {
-        return data.id;
-      }
-      if (stateMap.has(data.id)) {
-        return stateMap.get(data.id)[prop];
-      }
-      stateMap.set(data.id, initial);
-      return initial[prop];
-    },
-    set(_, prop, value) {
-      if (prop === StateKey) {
-        data.id = value;
-      } else {
-        stateMap.get(data.id)[prop] = value;
-        renderMap.get(seed)();
-      }
-      return true;
-    },
-  });
+
+  let value;
+  if (!stateMap.has(id)) {
+    stateMap.set(id, initial);
+    value = initial;
+  } else {
+    stateMap.get(id);
+  }
+
+  function setValue(newVal) {
+    let v;
+    if (typeof newVal === "function") v = newVal(stateMap.get(id));
+    else v = newVal;
+    stateMap.set(id, newVal);
+    renderMap.get(seed)();
+  }
+
+  return [value, setValue];
 }
 
 /**

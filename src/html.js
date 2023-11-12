@@ -2,6 +2,7 @@ import { eventMap, getSeededId } from "./";
 
 export function html(strings, ...values) {
   return strings.reduce((acc, str, i) => {
+    getSeededId(); // This is help stop state from colliding
     const value = values[i] ?? "";
     const curr = acc + str;
     if (typeof value === "function") {

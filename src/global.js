@@ -1,8 +1,8 @@
-import { renderHtml, useMount, useRef, html } from "./";
+import { renderHtml, useEffect, useState, html } from "./";
 
 window.Palm = {
   renderHtml,
-  useMount,
-  useRef,
+  useEffect,
+  useState,
   html,
 };

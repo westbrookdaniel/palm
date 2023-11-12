@@ -8,20 +8,20 @@ In a similar model to react, this rendering library is "fast enough" but for thi
 it gains an very small bundle size. It does this through instead of diffing or another method,
 I just destroy and rebuild the whole tree every time. This is appropriate for Island architecture
 since the node trees are going to be small anyway. Beyond the different approach, the library
-maintains the minimum needed to do reactive islands; state (useRef) and a way to run things
-once (useMount). On the journey for a slim size, I've also chosen to omit any form of sanitisation,
-so you need to do that yourself. Of course, being designed for islands, you can also run multiple
-instances of the app at the same time mounted against different elements.
+maintains the minimum needed to do reactive islands; state (useState) and a way to run things
+when its dependencies change (useEffect). On the journey for a slim size, I've also chosen to
+omit any form of sanitisation, so you need to do that yourself. Of course, being designed
+for islands, you can also run multiple instances of the app at the same time mounted
+against different elements.
 
 As you can tell, the library follows a simliar convention to react where hooks (`use`) must
-be used inside of components and be called in a consitent order. Notably, useRef converts the
-object you pass it into a proxy, so you can't destructure it.
+be used inside of components and be called in a consitent order.
 
 Both JSX and tagged template literals are supported.
 
 There is also a extra small version at `/dist/index.min.js` which is minified (unlike the rest
 of the modules, since it's expected you will use a bundler), although it does not include JSX support.
-This version also includes the global `Palm` with the properties `renderHtml`, `useMount`, `useRef` and `html`,
+This version also includes the global `Palm` with the properties `renderHtml`, `useEffect`, `useState` and `html`,
 so you can easily use this without a bundler.
 
 Try it out with `https://unpkg.com/@westbrookdaniel/palm/dist/index.min.js` (< 100 bytes)
@@ -32,10 +32,10 @@ If using JSX, add `"jsx": "react-jsx", "jsxImportSource": "@westbrookdaniel/palm
 
 ## Example Code
 
-```ts
+```tsx
 import {
-  useRef,
-  useMount,
+  useState,
+  useEffect,
   render,
   html,
   render,
@@ -43,14 +43,14 @@ import {
 } from "@westbrookdaniel/palm";
 
 function App() {
-  const count = useRef({ value: 0 });
+  const [count, setCount] = useState(0);
 
-  const dec = () => count.value--;
-  const inc = () => count.value++;
+  const dec = () => setCount(count - 1);
+  const inc = () => setCount(count + 1);
 
   return (
     <>
-      <h1>Count: {count.value}</h1>
+      <h1>Count: {count}</h1>
       <button onClick={dec}>Decrement</button>
       <button onClick={inc}>Increment</button>
       <TaggedTemplateApp />
@@ -61,17 +61,17 @@ function App() {
 render(App, document.getElementById("app")!);
 
 function TaggedTemplateApp() {
-  const count = useRef({ value: 0 });
+  const [count, setCount] = useState(0);
 
-  useMount(() => {
+  useEffect(() => {
     console.log("Only once!");
-  });
+  }, []);
 
-  const dec = () => count.value--;
-  const inc = () => count.value++;
+  const dec = () => setCount(count - 1);
+  const inc = () => setCount(count + 1);
 
   return html`
-    <h1>Count: ${count.value}</h1>
+    <h1>Count: ${count}</h1>
     <button onClick=${dec}>Decrement</button>
     <button onClick=${inc}>Increment</button>
   `;
