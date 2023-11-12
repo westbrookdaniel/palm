@@ -1,6 +1,6 @@
 {
   "name": "@westbrookdaniel/palm",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "MIT",
   "description": "Small UI library designed for islands",
   "repository": {
@@ -10,6 +10,7 @@
   "homepage": "https://github.com/westbrookdaniel/palm",
   "type": "module",
   "types": "./src/index.d.ts",
+  "main": "./src/index.js",
   "files": ["*"],
   "scripts": {
     "build": "bun build ./src/global.js --outfile ./dist/index.min.js --minify",
