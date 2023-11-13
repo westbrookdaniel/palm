@@ -9,6 +9,8 @@ export function renderHtml(node: () => string, el: HTMLElement): void;
 export function useEffect(cb: () => void, []: any[]): void;
 export function useState<T>(initial: T): [T, Setter<T>];
 
+export function renderToString(node: () => string): string;
+
 export type Setter<T> = (value: ValueOrUpdate<T>) => void;
 export type ValueOrUpdate<T> = T | ((prev: T) => T);
 

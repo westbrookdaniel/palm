@@ -12,6 +12,8 @@ const SetState = Symbol("SetState");
 
 export let getSeededId;
 
+let queue = queueMicrotask;
+
 /**
  * This is a helper function to create event listeners
  *
@@ -77,14 +79,17 @@ export function render(component, el) {
 /**
  * Render a component to a string
  * This is useful for server side rendering
+ * Note that this doesn't minify the html
  */
 export function renderToString(component) {
+  queue = () => {};
   const seed = randomSeed();
   getSeededId = createIdSeeder(seed);
   let html = component();
   if (isValidElement(html)) {
     html = renderJsx(html);
   }
+  queue = queueMicrotask;
   return html;
 }
 
@@ -152,7 +157,7 @@ export function useState(initial) {
     if (typeof newVal === "function") v = newVal(stateMap.get(id));
     else v = newVal;
     stateMap.set(id, v);
-    queueMicrotask(() => {
+    queue(() => {
       renderMap.get(seed)();
     });
   }
