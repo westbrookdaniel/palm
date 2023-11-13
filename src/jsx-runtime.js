@@ -61,7 +61,7 @@ function renderJsxChildren(c) {
   if (isValidElement(c)) {
     return renderJsx(c);
   }
-  return c.toString();
+  return c?.toString() ?? "";
 }
 
 export function Fragment(props) {

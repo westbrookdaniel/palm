@@ -8,6 +8,8 @@ const stateMap = new Map();
 const effectMap = new Map();
 const renderMap = new Map();
 
+const SetState = Symbol("SetState");
+
 export let getSeededId;
 
 /**
@@ -36,7 +38,7 @@ function applyEvents(el) {
  * renderHtml(App, document.getElementById('root'))
  */
 export function renderHtml(component, el) {
-  const seed = randomNum();
+  const seed = randomSeed();
   function _render() {
     getSeededId = createIdSeeder(seed);
     let html = component();
@@ -58,7 +60,7 @@ export function renderHtml(component, el) {
  * render(App, document.getElementById('root'))
  */
 export function render(component, el) {
-  const seed = randomNum();
+  const seed = randomSeed();
   function _render() {
     getSeededId = createIdSeeder(seed);
     let html = component();
@@ -76,6 +78,7 @@ export function render(component, el) {
  * This hook will run the callback function
  * whenever the second argument (dependencies) change
  * You can use it with an empty array to run it only once
+ * Notably, the setter returned from useState is ignored
  *
  * @example
  *
@@ -86,14 +89,22 @@ export function render(component, el) {
 export function useEffect(cb, deps) {
   const { id } = getSeededId();
   if (effectMap.has(id)) {
-    if (effectMap.get(id) !== JSON.stringify(deps)) {
+    if (hasDepsChanged(effectMap.get(id), deps)) {
       effectMap.set(id, deps);
       cb();
     }
   } else {
-    mountSet.add(id, JSON.stringify(deps));
+    effectMap.set(id, deps);
     cb();
   }
+}
+
+function hasDepsChanged(oldDeps, deps) {
+  if (oldDeps.length !== deps.length) return false;
+  return oldDeps.every((d, i) => {
+    if (d[SetState] && deps[i][SetState]) return false;
+    return d !== deps[i];
+  });
 }
 
 /**
@@ -119,47 +130,38 @@ export function useState(initial) {
     stateMap.set(id, initial);
     value = initial;
   } else {
-    stateMap.get(id);
+    value = stateMap.get(id);
   }
 
   function setValue(newVal) {
     let v;
     if (typeof newVal === "function") v = newVal(stateMap.get(id));
     else v = newVal;
-    stateMap.set(id, newVal);
-    renderMap.get(seed)();
+    stateMap.set(id, v);
+    queueMicrotask(() => {
+      renderMap.get(seed)();
+    });
   }
+
+  setValue[SetState] = true;
 
   return [value, setValue];
 }
 
 /**
- * This takes in a seed and generates a function that will return seeded random ids
- *
- * @example
- * const gen = createIdSeeder(2131238);
- * gen(); // { id: 'asdahsj', seed: 2131238 }
- * gen(); // { id: 'nsjkqwh', seed: 2131238 }
- *
- * const gen2 = createIdSeeder(2131238);
- * gen2(); // { id: 'asdahsj', seed: 2131238 }
- * gen2(); // { id: 'nsjkqwh', seed: 2131238 }
+ * This takes in a seed and creates a unique sequence of ids
  */
 function createIdSeeder(seed) {
-  const originalSeed = seed;
-  return function () {
-    var t = (seed += 0x6d2b79f5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    const num = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    return { id: num.toString(36).slice(2), seed: originalSeed };
+  let id = 0;
+  return () => {
+    id++;
+    return { id: seed + id, seed };
   };
 }
 
 /**
- * Generates a large random number to use as a seed
+ * Generate random string
  */
-function randomNum() {
-  const n = Math.random() * 4294967296;
-  return Math.floor(n);
+function randomSeed() {
+  return Math.random().toString(36).slice(2);
 }
