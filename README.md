@@ -79,3 +79,16 @@ function TaggedTemplateApp() {
 
 renderHtml(TaggedTemplateApp, document.getElementById("taggedTemplateApp")!);
 ```
+
+## renderToString
+
+There is also another function exported called `renderToString`
+which can be used for rendering an component to string.
+This is particularly useful for server side rendering (SSR).
+It works with both JSX and tagged template literals.
+
+```tsx
+import { renderToString } from "@westbrookdaniel/palm";
+
+renderToString(() => <div></div>); // '<div></div>'
+```
