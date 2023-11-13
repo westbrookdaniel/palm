@@ -10,7 +10,7 @@ const renderMap = new Map();
 
 const SetState = Symbol("SetState");
 
-export let getSeededId;
+globalThis.__Palm__ = { getSeededId: undefined };
 
 let queue = queueMicrotask;
 
@@ -39,16 +39,16 @@ function applyEvents(el) {
  * }
  * renderHtml(App, document.getElementById('root'))
  */
-export function renderHtml(component, el) {
+export async function renderHtml(component, el) {
   const seed = randomSeed();
-  function _render() {
-    getSeededId = createIdSeeder(seed);
-    let html = component();
+  async function _render() {
+    __Palm__.getSeededId = createIdSeeder(seed);
+    let html = await component();
     el.innerHTML = html;
     applyEvents(el);
   }
   renderMap.set(seed, _render);
-  _render();
+  await _render();
 }
 
 /**
@@ -61,19 +61,19 @@ export function renderHtml(component, el) {
  * }
  * render(App, document.getElementById('root'))
  */
-export function render(component, el) {
+export async function render(component, el) {
   const seed = randomSeed();
-  function _render() {
-    getSeededId = createIdSeeder(seed);
-    let html = component();
+  async function _render() {
+    __Palm__.getSeededId = createIdSeeder(seed);
+    let html = await component();
     if (isValidElement(html)) {
-      html = renderJsx(html);
+      html = await renderJsx(html);
     }
     el.innerHTML = html;
     applyEvents(el);
   }
   renderMap.set(seed, _render);
-  _render();
+  await _render();
 }
 
 /**
@@ -81,13 +81,13 @@ export function render(component, el) {
  * This is useful for server side rendering
  * Note that this doesn't minify the html
  */
-export function renderToString(component) {
+export async function renderToString(component) {
   queue = () => {};
   const seed = randomSeed();
-  getSeededId = createIdSeeder(seed);
-  let html = component();
+  __Palm__.getSeededId = createIdSeeder(seed);
+  let html = await component();
   if (isValidElement(html)) {
-    html = renderJsx(html);
+    html = await renderJsx(html);
   }
   queue = queueMicrotask;
   return html;
@@ -106,7 +106,7 @@ export function renderToString(component) {
  * }, [])
  */
 export function useEffect(cb, deps) {
-  const { id } = getSeededId();
+  const { id } = __Palm__.getSeededId();
   if (effectMap.has(id)) {
     if (hasDepsChanged(effectMap.get(id), deps)) {
       effectMap.set(id, deps);
@@ -142,7 +142,7 @@ function hasDepsChanged(oldDeps, deps) {
  * setCount(c => c + 1); // count === 2
  */
 export function useState(initial) {
-  const { id, seed } = getSeededId();
+  const { id, seed } = __Palm__.getSeededId();
 
   let value;
   if (!stateMap.has(id)) {
@@ -184,3 +184,23 @@ function createIdSeeder(seed) {
 function randomSeed() {
   return Math.random().toString(36).slice(2);
 }
+
+/**
+ * You probably don't need this, it's for wacky use cases
+ */
+export const __INTERNALS = {
+  setup: () => {
+    queue = () => {};
+    const seed = randomSeed();
+    __Palm__.getSeededId = createIdSeeder(seed);
+  },
+  toString: async (html) => {
+    if (isValidElement(html)) {
+      return await renderJsx(html);
+    }
+    return html;
+  },
+  reset: () => {
+    queue = queueMicrotask;
+  },
+};

@@ -1,4 +1,4 @@
-import { eventMap, getSeededId } from "./";
+import { eventMap } from "./";
 
 export function jsx(tag, props) {
   const children = props.children ?? [];
@@ -15,15 +15,18 @@ export function isValidElement(node) {
   return node.$$typeof === VNodeSymbol;
 }
 
-export function renderJsx(node) {
+export async function renderJsx(node) {
   const { tag, props, children } = node;
 
-  getSeededId(); // This is help stop state from colliding
+  __Palm__.getSeededId(); // This is help stop state from colliding
 
   const attrs = Object.entries(props)
     .map(([key, value]) => {
+      if (key === "className") {
+        return `class="${value}"`;
+      }
       if (typeof value === "function") {
-        const { id } = getSeededId();
+        const { id } = __Palm__.getSeededId();
         eventMap.set(id, [key.substring(2).toLowerCase(), value]);
         return `data-event="${id}"`;
       }
@@ -39,29 +42,32 @@ export function renderJsx(node) {
     .join(" ");
 
   if (tag === "") {
-    return renderJsxChildren(children);
+    return await renderJsxChildren(children);
   }
 
   if (typeof tag === "function") {
-    const jsx = tag({ ...props, children });
-    return renderJsxChildren(jsx);
+    const jsx = await tag({ ...props, children });
+    return await renderJsxChildren(jsx);
   }
 
   if (emptyTags.includes(tag)) {
     return `<${tag} ${attrs} />`;
   }
 
-  return `<${tag} ${attrs}>${renderJsxChildren(children)}</${tag}>`;
+  return `<${tag} ${attrs}>${await renderJsxChildren(children)}</${tag}>`;
 }
 
-function renderJsxChildren(c) {
+async function renderJsxChildren(c) {
+  if (c === false || c === null || c === undefined) {
+    return "";
+  }
   if (Array.isArray(c)) {
-    return c.map(renderJsxChildren).join("");
+    return (await Promise.all(c.map(renderJsxChildren))).join("");
   }
   if (isValidElement(c)) {
-    return renderJsx(c);
+    return await renderJsx(c);
   }
-  return c?.toString() ?? "";
+  return c.toString();
 }
 
 export function Fragment(props) {

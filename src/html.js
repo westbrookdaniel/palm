@@ -1,12 +1,12 @@
-import { eventMap, getSeededId } from "./";
+import { eventMap } from "./";
 
 export function html(strings, ...values) {
   return strings.reduce((acc, str, i) => {
-    getSeededId(); // This is help stop state from colliding
+    __Palm__.getSeededId(); // This is help stop state from colliding
     const value = values[i] ?? "";
     const curr = acc + str;
     if (typeof value === "function") {
-      const { id } = getSeededId();
+      const { id } = __Palm__.getSeededId();
       const index = curr.lastIndexOf(" on");
       const event = curr.slice(index + 3, -1).toLowerCase();
       if (event.includes(" ")) throw new Error("Invalid event: " + event);

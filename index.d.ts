@@ -1,15 +1,15 @@
-import { Children, VNode } from "./jsx-runtime";
+import { Children, VNode, ComponentType } from "./jsx-runtime";
 
 export { isValidElement, Fragment } from "./jsx-runtime";
 export { html } from "./html";
 export { Children, VNode };
 
-export function render(node: () => string, el: HTMLElement): void;
-export function renderHtml(node: () => string, el: HTMLElement): void;
+export function render(node: ComponentType, el: HTMLElement): Promise<void>;
+export function renderHtml(node: ComponentType, el: HTMLElement): Promise<void>;
 export function useEffect(cb: () => void, []: any[]): void;
 export function useState<T>(initial: T): [T, Setter<T>];
 
-export function renderToString(node: () => string): string;
+export function renderToString(node: ComponentType): Promise<string>;
 
 export type Setter<T> = (value: ValueOrUpdate<T>) => void;
 export type ValueOrUpdate<T> = T | ((prev: T) => T);
