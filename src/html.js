@@ -7,12 +7,12 @@ export function html(strings, ...values) {
     const curr = acc + str;
     if (typeof value === "function") {
       const { id } = getSeededId();
-      const index = curr.lastIndexOf("on");
-      const event = curr.slice(index + 2, -1).toLowerCase();
+      const index = curr.lastIndexOf(" on");
+      const event = curr.slice(index + 3, -1).toLowerCase();
       if (event.includes(" ")) throw new Error("Invalid event: " + event);
       const before = curr.slice(0, index);
       eventMap.set(id, [event, value]);
-      return before + `data-event="${id}"`;
+      return before + ` data-event="${id}"`;
     }
     return curr + value;
   }, "");
