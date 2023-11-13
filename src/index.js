@@ -75,6 +75,20 @@ export function render(component, el) {
 }
 
 /**
+ * Render a component to a string
+ * This is useful for server side rendering
+ */
+export function renderToString(component) {
+  const seed = randomSeed();
+  getSeededId = createIdSeeder(seed);
+  let html = component();
+  if (isValidElement(html)) {
+    html = renderJsx(html);
+  }
+  return html;
+}
+
+/**
  * This hook will run the callback function
  * whenever the second argument (dependencies) change
  * You can use it with an empty array to run it only once
