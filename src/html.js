@@ -1,9 +1,11 @@
 import { eventMap } from "./";
 
-export function html(strings, ...values) {
-  return strings.reduce((acc, str, i) => {
+export async function html(strings, ...values) {
+  let acc = "";
+  for (let i = 0; i < strings.length; i++) {
+    const str = strings[i];
     __Palm__.getSeededId(); // This is help stop state from colliding
-    const value = values[i] ?? "";
+    const value = (await values[i]) ?? "";
     const curr = acc + str;
     if (typeof value === "function") {
       const { id } = __Palm__.getSeededId();
@@ -12,8 +14,10 @@ export function html(strings, ...values) {
       if (event.includes(" ")) throw new Error("Invalid event: " + event);
       const before = curr.slice(0, index);
       eventMap.set(id, [event, value]);
-      return before + ` data-event="${id}"`;
+      acc = before + ` data-event="${id}"`;
+    } else {
+      acc = curr + value;
     }
-    return curr + value;
-  }, "");
+  }
+  return acc;
 }
